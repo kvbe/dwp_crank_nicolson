@@ -11,6 +11,18 @@
 
 using namespace std;
 
+par_i::par_i(int init_int, 
+		 string init_str,
+		 string init_tex
+		)
+{
+	par_int = init_int;
+	par_str = init_str;
+	par_tex = init_tex;
+}
+
+//###########################################
+
 par::par(double init_dbl, 
 		 string init_str,
 		 string init_tex
@@ -21,16 +33,35 @@ par::par(double init_dbl,
 	par_tex = init_tex;
 }
 
-//###########################################
-
-par_i::par_i(int init_int, 
+par::par(int init_int, 
 		 string init_str,
 		 string init_tex
 		)
 {
-	par_int = init_int;
+	par_dbl = (double)init_int;
 	par_str = init_str;
 	par_tex = init_tex;
+}
+
+par::par(bool init_bool, 
+		 string init_str,
+		 string init_tex
+		)
+{
+	par_dbl = 0.0;
+	if(init_bool)
+	{
+		par_dbl = 1.0;
+	}	
+	par_str = init_str;
+	par_tex = init_tex;
+}
+
+par::par(par_i init_par_i)
+{
+	par_dbl = (double)init_par_i.par_int;
+	par_str = init_par_i.par_str;
+	par_tex = init_par_i.par_tex;
 }
 
 //###########################################
@@ -231,7 +262,7 @@ osc_par_set::osc_par_set(string option)
 	}
 	else
 	{
-		cout << "err001: mode not available" << endl;
+		cout << "err001: osc_par_set - mode not available" << endl;
 	}
 }
 
@@ -260,68 +291,128 @@ void osc_par_set::cout_pars(vector<par> collection)
 	}
 }
 
-//###########################################
-
-/*
-ipar_set::ipar_set(string option)
+void osc_par_set::cout_pars()
 {
-	if(option == "quick")
+	vector<par> collection = this->collect();
+
+	for(unsigned i=0; i<collection.size(); i++)
 	{
-		this->int_time.par_dbl = 300.0;
-		this->out_time.par_dbl = 100.0;
-		this->dt.par_dbl = 1e-4;
-		this->sqrtdt.par_dbl = sqrt(1e-4);
-		this->D.par_dbl = 0.0;
-		this->rea.par_dbl = 1.0;
-	}
-	else if(option == "def")
-	{
-		this->int_time.par_dbl = 100.0;
-		this->out_time.par_dbl = 50.0;
-		this->dt.par_dbl = 1e-3;
-		this->sqrtdt.par_dbl = sqrt(1e-3);
-		this->D.par_dbl = 0.0;
-		this->rea.par_dbl = 1.0;
-	}
-	else if(option == "noise")
-	{
-		this->int_time.par_dbl = 300.0;
-		this->out_time.par_dbl = 100.0;
-		this->dt.par_dbl = 1e-4;
-		this->sqrtdt.par_dbl = sqrt(1e-4);
-		this->D.par_dbl = 0.2;
-		this->rea.par_dbl = 1.0;
-	}
-	else if(option == "lina")
-	{
-		this->int_time.par_dbl = 5e2;
-		this->out_time.par_dbl = 1e2;
-		this->dt.par_dbl = 1e-4;
-		this->sqrtdt.par_dbl = sqrt(1e-4);
-		this->D.par_dbl = 0.0;
-		this->rea.par_dbl = 1.0;
-	}
-	else
-	{
-		cout << "err002" << endl;
+		cout << collection[i].par_str;
+		cout << " = ";
+		cout << collection[i].par_dbl;
+		cout << endl;
 	}
 }
 
-vector<par> ipar_set::collect()
+//###########################################
+
+
+int_par_set::int_par_set(string option)
+{
+	if(option == "def")
+	{
+		this->Tmin.par_dbl = 0.0;
+		this->Tmax.par_dbl = 1.0;
+		this->Tpts.par_int = 2;
+		this->dT.par_dbl = 0.5;
+
+		this->Xmin.par_dbl = -1.0;
+		this->Xmax.par_dbl = 1.0;
+		this->Xpts.par_int = 2;
+		this->dX.par_dbl = 1.0;
+
+		//in megabytes
+		this->estimated_RAM = 48.0*8e-6;
+		this->max_RAM = 1e3;
+		this->batches = 0;
+		this->divide_in_batches = false;
+	}
+	else if(option == "quick")
+	{
+		this->Tmin.par_dbl = 0.0;
+		this->Tmax.par_dbl = 4.0;
+		this->Tpts.par_int = 50;
+		this->dT.par_dbl = (this->Tmax.par_dbl-this->Tmin.par_dbl)/this->Tpts.par_int;
+
+		this->Xmin.par_dbl = -5.0;
+		this->Xmax.par_dbl = 5.0;
+		this->Xpts.par_int = 50;
+		this->dX.par_dbl = (this->Xmax.par_dbl-this->Xmin.par_dbl)/this->Xpts.par_int;
+
+		this->max_RAM = 1e3;
+
+
+		double CN_RAM = 8.0*this->Xpts.par_int*this->Xpts.par_int;
+		CN_RAM += 4.0*this->Xpts.par_int;
+		CN_RAM *= 8e-6;
+
+		double IO_RAM = 2*this->Xpts.par_int*this->Tpts.par_int;
+		IO_RAM *= 8e-6;
+
+		this->estimated_RAM = CN_RAM + IO_RAM;
+
+		if(this->max_RAM < CN_RAM)
+		{
+			cout << "err003: too much estimated RAM for the CN matrix" << endl;
+		}
+		else
+		{
+			if(this->max_RAM > this->estimated_RAM)
+			{
+				this->divide_in_batches = false;
+				this->batches = 0;
+			}
+			else
+			{
+				this->divide_in_batches = true;
+				this->batches = ceil(IO_RAM/(this->max_RAM - CN_RAM));
+
+				if(this->batches > this->Tpts.par_int)
+				{
+					cout << "err004: batch size smaller than time step" << endl;
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "err002: int_par_set - mode not defined" << endl;
+	}
+
+}
+
+vector<par> int_par_set::collect()
 {
 	vector<par> collection;
 	
-	collection.push_back(this->int_time);
-	collection.push_back(this->out_time);
-	collection.push_back(this->dt);
-	collection.push_back(this->sqrtdt);
-	collection.push_back(this->D);
+	collection.push_back(this->Tmin);
+	collection.push_back(this->Tmax);
+	par Tpts_par(this->Tpts);
+	collection.push_back(Tpts_par);
+	collection.push_back(this->dT);
 
+	collection.push_back(this->Xmin);
+	collection.push_back(this->Xmax);
+	par Xpts_par(this->Xpts);
+	collection.push_back(Xpts_par);
+	collection.push_back(this->dX);
+
+	par estimated_RAM_par(this->estimated_RAM,"estimated_RAM","estimated RAM");
+	collection.push_back(estimated_RAM_par);
+
+	par max_RAM_par(this->max_RAM,"max_RAM","max RAM");
+	collection.push_back(max_RAM_par);
+
+	par divide_in_batches_par(this->divide_in_batches,"divide_in_batches","divide in batches");
+	collection.push_back(divide_in_batches_par);
+
+	par batches_par(this->batches,"batches","batches");
+	collection.push_back(batches_par);
 	
 	return collection;
 }
 
-void ipar_set::cout_pars(vector<par> collection)
+void int_par_set::cout_pars(vector<par> collection)
 {
 	for(unsigned int i = 0; i < collection.size(); i++)
 	{
@@ -332,6 +423,20 @@ void ipar_set::cout_pars(vector<par> collection)
 	}
 }
 
+void int_par_set::cout_pars()
+{
+	vector<par> collection = this->collect();
+
+	for(unsigned int i = 0; i < collection.size(); i++)
+	{
+		cout << collection[i].par_str;
+		cout << " = ";
+		cout << collection[i].par_dbl;
+		cout << endl;
+	}
+}
+
+/*
 //###########################################
 
 allpar_set::allpar_set()

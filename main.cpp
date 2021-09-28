@@ -43,7 +43,7 @@ double get_x(double dX, double Xmin, long unsigned i)
 
 double get_uv0(double dX, double Xmin, long unsigned i, string mode)
 {
-	double x = Xmin+i*dX+dX/2;
+//	double x = Xmin+i*dX+dX/2;
 
 	if(mode=="her3")
 	{
@@ -63,7 +63,11 @@ int main(int argc, char* argv[])
 	timer time_total;
 
 	osc_par_set OP("1");
-	OP.cout_pars(OP.collect());
+//	OP.cout_pars();
+
+	int_par_set IP("quick");
+//	IP.cout_pars();
+
 
 	double Tmin = 0.0;
 	double Tmax = 8.0;

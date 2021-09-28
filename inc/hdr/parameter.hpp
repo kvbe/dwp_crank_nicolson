@@ -1,20 +1,6 @@
 #ifndef __PARAMETER_HPP_INCLUDED__
 #define __PARAMETER_HPP_INCLUDED__
 
-class par
-{
-public:
-	double par_dbl;
-	std::string par_str;
-	std::string par_tex;
-
-	par(double init_dbl, 
-	    std::string init_str,
-	    std::string init_tex
-	   );
-};
-
-//###########################################
 
 class par_i
 {
@@ -27,6 +13,30 @@ public:
 	    std::string init_str,
 	    std::string init_tex
 	   );
+};
+
+//###########################################
+
+class par
+{
+public:
+	double par_dbl;
+	std::string par_str;
+	std::string par_tex;
+
+	par(double init_dbl, 
+	    std::string init_str,
+	    std::string init_tex
+	   );
+	par(int init_int, 
+	    std::string init_str,
+	    std::string init_tex
+	   );
+	par(bool init_bool, 
+	    std::string init_str,
+	    std::string init_tex
+	   );
+	par(par_i init_par_i);
 };
 
 //###########################################
@@ -79,7 +89,7 @@ public:
 
 	std::vector<par> collect();
 	void cout_pars(std::vector<par> collection);
-
+	void cout_pars();
 };
 
 //###########################################
@@ -97,10 +107,16 @@ public:
 	par_i Xpts{2, "Xpts", "x_{\\text{pts}}"};
 	par dX{1.0, "dX", "\\Delta x"};
 
+	double estimated_RAM = 44.0*8.0*1e-6;
+	double max_RAM = 1e3;
+	int batches = 0;
+	bool divide_in_batches = false;
+
 	int_par_set(std::string option);
 	
 	std::vector<par> collect();
 	void cout_pars(std::vector<par> collection);
+	void cout_pars();
 };
 
 //###########################################
