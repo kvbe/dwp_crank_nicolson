@@ -120,30 +120,28 @@ public:
 };
 
 //###########################################
-/*
-class allpar_set
+
+class all_par_set
 {
 public:
-	lpar_set LP{"def"};
-	fpar_set FP{"def"};
-	ipar_set IP{"def"};
+	osc_par_set OP{"def"};
+	int_par_set IP{"def"};
 	
-	allpar_set();
-	allpar_set(std::string optL, std::string optF, std::string optI);
-	allpar_set(lpar_set LP_init, fpar_set FP_init, ipar_set IP_init);
+	all_par_set();
+	all_par_set(std::string optO, std::string optI);
+	all_par_set(osc_par_set OP_init, int_par_set IP_init);
 
 	
 	std::vector<par> collect();
 	std::vector<par*> collect_ptr();
 	void cout_pars(std::vector<par> collection);
-	
+	void cout_pars();
+
+
 	void check_cmd_line(int argc, char* argv[]);
 	par* get_par_ptr(std::string);
-	
-	double larger_delay();
-	double smaller_delay();
 };
-
+/*
 //###########################################
 
 class icpar_set

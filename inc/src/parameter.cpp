@@ -436,80 +436,59 @@ void int_par_set::cout_pars()
 	}
 }
 
-/*
 //###########################################
 
-allpar_set::allpar_set()
+all_par_set::all_par_set()
+{}
+
+all_par_set::all_par_set(string optO, string optI)
 {
+	osc_par_set OP_init{optO};
+	int_par_set IP_init{optI};
 
-}
-
-allpar_set::allpar_set(string optL, string optF, string optI)
-{
-	lpar_set LP_init{optL};
-	fpar_set FP_init{optF};
-	ipar_set IP_init{optI};
-
-	this->LP = LP_init;
-	this->FP = FP_init;
+	this->OP = OP_init;
 	this->IP = IP_init;
 }
 
-allpar_set::allpar_set(lpar_set LP_init, fpar_set FP_init, ipar_set IP_init)
+all_par_set::all_par_set(osc_par_set OP_init, int_par_set IP_init)
 {
-	this->LP = LP_init;
-	this->FP = FP_init;
+	this->OP = OP_init;
 	this->IP = IP_init;
 }
 
-vector<par> allpar_set::collect()
+vector<par> all_par_set::collect()
 {
-	vector<par> vecLP;
-	vector<par> vecFP;
-	vector<par> vecIP;
-	
-	vecLP = this->LP.lpar_set::collect();
-	vecFP = this->FP.fpar_set::collect();
-	vecIP = this->IP.ipar_set::collect();
-	
-	vecLP.insert(vecLP.end(), vecFP.begin(), vecFP.end());
-	vecLP.insert(vecLP.end(), vecIP.begin(), vecIP.end());
+	vector<par> vecOP = this->OP.osc_par_set::collect();
+	vector<par> vecIP = this->IP.int_par_set::collect();
 
-	return vecLP;
+	vecOP.insert(vecOP.end(), vecIP.begin(), vecIP.end());
+
+	return vecOP;
 }
 
-vector<par*> allpar_set::collect_ptr()
+vector<par*> all_par_set::collect_ptr()
 {
 	vector<par*> collection;
+
+	collection.push_back(&OP.m);
+	collection.push_back(&OP.w);
+	collection.push_back(&OP.w2);
+	collection.push_back(&OP.sb);
+	collection.push_back(&OP.b0);
+	collection.push_back(&OP.sr);
 	
-	collection.push_back(&LP.ag);
-	collection.push_back(&LP.aq);
-	collection.push_back(&LP.Jg);
-	collection.push_back(&LP.q0);
-	collection.push_back(&LP.rs);
-	collection.push_back(&LP.g);
-	collection.push_back(&LP.gg);
-	collection.push_back(&LP.gq);
-	collection.push_back(&LP.sqrtkap);
-	collection.push_back(&LP.dw);
-	collection.push_back(&LP.T);
-	
-	collection.push_back(&FP.K);
-	collection.push_back(&FP.tau);
-	collection.push_back(&FP.wLP);
-	
-	collection.push_back(&IP.int_time);
-	collection.push_back(&IP.out_time);
-	collection.push_back(&IP.dt);
-	collection.push_back(&IP.sqrtdt);
-	collection.push_back(&IP.D);
-	
-	
+	collection.push_back(&IP.Tmin);
+	collection.push_back(&IP.Tmax);
+	collection.push_back(&IP.dT);
+
+	collection.push_back(&IP.Xmax);
+	collection.push_back(&IP.Xmin);
+	collection.push_back(&IP.dX);
 
 	return collection;
 }
 
-void allpar_set::cout_pars(vector<par> collection)
+void all_par_set::cout_pars(vector<par> collection)
 {
 	for(unsigned int i = 0; i < collection.size(); i++)
 	{
@@ -520,7 +499,20 @@ void allpar_set::cout_pars(vector<par> collection)
 	}
 }
 
-void allpar_set::check_cmd_line(int argc, char* argv[])
+void all_par_set::cout_pars()
+{
+	vector<par> collection = this->collect();
+	
+	for(unsigned int i = 0; i < collection.size(); i++)
+	{
+		cout << collection[i].par_str;
+		cout << " = ";
+		cout << collection[i].par_dbl;
+		cout << endl;
+	}
+}
+
+void all_par_set::check_cmd_line(int argc, char* argv[])
 {
 	par_cmd cmd(argv, argv+argc);
 	
@@ -574,23 +566,7 @@ par* allpar_set::get_par_ptr(std::string par_str)
 	return out_par_ptr;
 }
 
-
-double allpar_set::larger_delay()
-{
-	double T1 = this->LP.T.par_dbl;
-	double T2 = this->FP.tau.par_dbl;
-	double max_tau = T1 < T2 ? T2 : T1; 
-	return max_tau;
-}
-
-double allpar_set::smaller_delay()
-{
-	double T1 = this->LP.T.par_dbl;
-	double T2 = this->FP.tau.par_dbl;
-	double min_tau = T1 > T2 ? T2 : T1; 
-	return min_tau;
-}
-
+/*
 //###########################################
 
 icpar_set::icpar_set(string option)
