@@ -33,3 +33,15 @@
 
 # Raw Data
 *.dat
+
+# LaTeX files
+.gz
+.aux
+.log
+.pdf
+
+# Image and Movie files
+.gif
+.mp4
+.png
+.jpg

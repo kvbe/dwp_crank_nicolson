@@ -1,0 +1,309 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[
+    left=15mm,
+    right=15mm
+]{geometry}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{physics}
+\usepackage{dsfont}
+
+\usepackage[squaren]{SIunits}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\suml}{\sum\limits}
+\newcommand{\prodl}{\prod\limits}
+\newcommand{\intl}{\int\limits}
+
+
+\begin{document}
+
+\begin{align}
+    s:\mathbb{R}\to\mathbb{R},~
+    t
+    &\to
+    s(t)
+\end{align}
+
+
+\begin{align}
+    \mi
+    \partial_t
+    \Psi
+    (x,t)
+    &=
+    \pqty{
+    		\hat{H}_0
+        +
+        V(x,t)
+    }
+    \Psi
+    (x,t)
+\\
+	\hat{H}_0
+	&=
+    -\frac{1}{2m}
+    \partial_x^2
+    -
+    \frac{m\omega^2}{2}
+    x^2
+\\
+    V(x,t)
+    &=
+    b(x)
+    s(t)
+\end{align}
+
+
+Parameters:
+
+\begin{tabular}{lll}
+name&symbol&def val.\\
+\hline
+reduced planck constant&$\hbar$&1\\
+mass&$m$&1\\
+frequency&$\omega$&1\\
+pertubation sigma&$\sigma_b$&1\\
+pertubation amplitude&$b_0$&1\\
+step roughness&$s_r$&1\
+\end{tabular}
+
+
+
+
+
+\begin{align}
+    \Psi
+    (x,t)
+    &=
+    \mathcal{T}
+    \exp\pqty{
+    		-
+    		\mi
+    		\hat{H}_0
+    		t
+    		-
+		\mi b(x)
+		\intl_0^t
+		\dd{t^\prime}
+		s(t^\prime)    
+    }
+    \Psi
+    (x,0)
+\end{align}
+
+
+
+\begin{align}
+	\Psi
+	(x,t)
+	&=
+	u(x,t)
+	+
+	\mi v(x,t)
+\\
+	\partial_t u
+	&=
+	-
+	\frac{1}{2m}
+	\partial_x^2
+	v
+	-
+	\frac{m\omega^2}{2}
+	x^2
+	v
+	+
+	b(x)
+	s(t)
+	v
+\\
+	\partial_t v
+	&=
+	\frac{1}{2m}
+	\partial_x^2
+	u
+	+
+	\frac{m\omega^2}{2}
+	x^2
+	u
+	-
+	b(x)
+	s(t)
+	u
+\\
+	\partial_t
+	\pmqty{u\\v}
+	&=
+	\pmqty{0&-1\\1&0}	
+	\otimes	
+	\pqty{
+	\frac{1}{2m}
+	\partial_x^2
+	+
+	\frac{m\omega^2}{2}
+	x^2
+	-
+	b(x)
+	s(t)
+	}
+	\pmqty{u\\v}
+\end{align}
+
+$j$ indexes the time and $i$ the space
+
+
+
+\begin{align}
+	\partial_t
+	\pmqty{u\\v}
+	&\sim
+	\frac{1}{\Delta t}
+	\pmqty{u_i^{j+1}-u_i^{j}\\v_i^{j+1}-v_i^{j}}
+\\
+	\pmqty{0&-1\\1&0}	
+	\frac{1}{2m}
+	\partial_x^2
+	\pmqty{u\\v}
+	&\sim
+	\frac{1}{4m\Delta x^2}
+	\pmqty{
+		-(v^{j+1}_{i+1}-2v^{j+1}_{i}+v^{j+1}_{i-1})
+		-(v^{j}_{i+1}-2v^{j}_{i}+v^{j}_{i-1})
+		\\
+		(u^{j+1}_{i+1}-2u^{j+1}_{i}+u^{j+1}_{i-1})
+		(u^{j}_{i+1}-2u^{j}_{i}+u^{j}_{i-1})
+	}
+\\
+	\pmqty{0&-1\\1&0}
+	\frac{m\omega^2}{2}
+	x^2
+	\pmqty{u\\v}
+	&\sim
+	\frac{m\omega^2 x^2_{i}}{4}
+	\pmqty{
+		-v^{j+1}_i-v^{j}_i
+		\\
+		u^{j+1}_i+u^{j}_i		
+	}
+\\
+	-
+	\pmqty{0&-1\\1&0}
+	b(x)
+	s(t)
+	\pmqty{u\\v}
+	&\sim
+	\frac{b(x_{i})}{2}
+	\pmqty{
+		s(t_{j+1})v_{j+1}^i+s(t_{j+1})v_{j}^i
+		\\
+		-s(t_{j+1})u_{j+1}^i-s(t_{j+1})u_{j}^i
+	}
+\end{align}
+
+
+
+
+
+
+
+\begin{align}
+	&
+	u^{j+1}_i
+	+
+	\frac{\Delta t}{4m\Delta x^2}
+	\pqty{
+		v^{j+1}_{i+1}-2v^{j+1}_{i}+v^{j+1}_{i-1}
+	}
+	+
+	\frac{m\omega^2\Delta t}{4}
+	x^2_{i}v^{j+1}_i
+	-
+	\frac{b(x_{i})\Delta t}{2}
+	s(t_{j+1})v_{j+1}^i
+\\
+	=&
+	u^{j}_i
+	+
+	\frac{\Delta t}{4m\Delta x^2}
+	\pqty{
+		v^{j}_{i+1}-2v^{j}_{i}+v^{j}_{i-1}
+	}
+	+
+	\frac{m\omega^2\Delta t}{4}
+	x^2_{i}v^{j}_i
+	-
+	\frac{b(x_{i})\Delta t}{2}
+	s(t_{j})v_{j}^i
+\\
+	&
+	v^{j+1}_i
+	+
+	\frac{\Delta t}{4m\Delta x^2}
+	\pqty{
+		u^{j+1}_{i+1}-2u^{j+1}_{i}+u^{j+1}_{i-1}
+	}
+	+
+	\frac{m\omega^2\Delta t}{4}
+	x^2_{i}u^{j+1}_i
+	-
+	\frac{b(x_{i})\Delta t}{2}
+	s(t_{j+1})u_{j+1}^i
+\\
+	=&
+	v^{j}_i
+	-
+	\frac{\Delta t}{4m\Delta x^2}
+	\pqty{
+		u^{j}_{i+1}-2u^{j}_{i}+u^{j}_{i-1}
+	}
+	-
+	\frac{m\omega^2\Delta t}{4}
+	x^2_{i}u^{j}_i
+	+
+	\frac{b(x_{i})\Delta t}{2}
+	s(t_{j})u_{j}^i
+\end{align}
+
+
+
+
+\begin{align}
+	L
+	\pmqty{
+		u^{j+1}_1
+		\\
+		\vdots
+		\\
+		u^{j+1}_N
+		\\		
+		v^{j+1}_1
+		\\
+		\vdots
+		\\
+		v^{j+1}_N
+	}
+	&=
+	R
+	\pmqty{
+		u^{j}_1
+		\\
+		\vdots
+		\\
+		u^{j}_N
+		\\		
+		v^{j}_1
+		\\
+		\vdots
+		\\
+		v^{j}_N
+	}
+\end{align}
+
+\end{document}

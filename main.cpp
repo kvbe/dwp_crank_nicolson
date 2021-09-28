@@ -17,7 +17,7 @@
 #include <ctime>
 
 #include "timer.hpp"
-
+#include "parameter.hpp"
 
 
 
@@ -36,17 +36,34 @@ double step(double t)
 }
 
 
+double get_x(double dX, double Xmin, long unsigned i)
+{
+	return Xmin+i*dX+dX/2;
+}
+
+double get_uv0(double dX, double Xmin, long unsigned i, string mode)
+{
+	double x = Xmin+i*dX+dX/2;
+
+	if(mode=="her3")
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+	
+}
+
+
 
 int main(int argc, char* argv[])
 {
 	timer time_total;
 
-	mat X(10,10,fill::eye);
-	X.print();
-
-//	mat Y = X.i();
-//	Y.print();
-
+	osc_par_set OP("1");
+	OP.cout_pars(OP.collect());
 
 	double Tmin = 0.0;
 	double Tmax = 8.0;
@@ -60,6 +77,24 @@ int main(int argc, char* argv[])
 	long unsigned Xpts = 7;
 
 	double dX = (Xmax - Xmin)/Xpts;
+
+	vec uv(2*Xpts,fill::zeros);
+	vec new_uv(Xpts,fill::zeros);
+
+
+	for(long unsigned i=0; i<2*Xpts; i++)
+	{
+		if(i<Xpts)
+		{
+			uv(i) = 0;
+		}
+		else
+		{
+			uv(i) = 0;
+		}
+		 
+	}
+
 
 
 
@@ -82,7 +117,7 @@ int main(int argc, char* argv[])
 
 	for(unsigned long i=0; i<Xpts; i++)
 	{
-		double x = Xmin+i*dX+dX/2;
+		double x = get_x(dX,Xmin,i);
 		double t = Tmin+j*dT;
 		
 		if(i<Xpts-1)
@@ -113,22 +148,12 @@ int main(int argc, char* argv[])
 	I.eye();
 
 	LL = LL + I;
-	RR = RR + I;
-
 	mat mLL(LL);
+	
+	RR = RR + I;
 	mat mRR(RR);
 
-//	mat RES;
-//	mat X = mLL.i();
-
-	mLL.print();
-	cout << "\n\n";
-	mRR.print();
-	cout << "\n\n";
-
-	cout << r1 << endl;
-
-
+	mat RES = mLL.i()*mRR;
 
 
 	time_total.stop();
