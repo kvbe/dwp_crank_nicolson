@@ -141,7 +141,7 @@ public:
 	void check_cmd_line(int argc, char* argv[]);
 	par* get_par_ptr(std::string);
 };
-/*
+
 //###########################################
 
 class icpar_set
@@ -177,7 +177,7 @@ public:
 
 //###########################################
 
-class lpar_dbl_set
+class osc_par_dbl_set
 {
 public:
 	double ag;
@@ -192,26 +192,13 @@ public:
 	double dw;
 	double T;
 
-	lpar_dbl_set(lpar_set LP);
-	lpar_dbl_set(allpar_set AP);
+	osc_par_dbl_set(osc_par_set init_OP);
+	osc_par_dbl_set(all_par_set init_AP);
 };
 
 //###########################################
 
-class fpar_dbl_set
-{
-public:
-	double K;
-	double tau;
-	double wLP;
-  
-	fpar_dbl_set(fpar_set FP);
-	fpar_dbl_set(allpar_set AP);
-};
-
-//###########################################
-
-class ipar_dbl_set
+class int_par_dbl_set
 {
 public:
 	double int_time;
@@ -227,8 +214,6 @@ public:
 };
 
 
-
-*/
 
 
 #endif

@@ -69,6 +69,11 @@ int main(int argc, char* argv[])
 //	IP.cout_pars();
 
 
+	all_par_set AP(OP,IP);
+	AP.check_cmd_line(argc,argv);
+
+	AP.cout_pars();
+
 	double Tmin = 0.0;
 	double Tmax = 8.0;
 	long unsigned Tpts = 7;

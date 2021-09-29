@@ -516,31 +516,60 @@ void all_par_set::check_cmd_line(int argc, char* argv[])
 {
 	par_cmd cmd(argv, argv+argc);
 	
-	this->LP.ag.par_dbl = cmd.get_dbl(this->LP.ag.par_str, this->LP.ag.par_dbl);
-	this->LP.aq.par_dbl = cmd.get_dbl(this->LP.aq.par_str, this->LP.aq.par_dbl);
-	this->LP.Jg.par_dbl = cmd.get_dbl(this->LP.Jg.par_str, this->LP.Jg.par_dbl);
-	this->LP.q0.par_dbl = cmd.get_dbl(this->LP.q0.par_str, this->LP.q0.par_dbl);
-	this->LP.rs.par_dbl = cmd.get_dbl(this->LP.rs.par_str, this->LP.rs.par_dbl);
-	this->LP.g.par_dbl = cmd.get_dbl(this->LP.g.par_str, this->LP.g.par_dbl);
-	this->LP.gg.par_dbl = cmd.get_dbl(this->LP.gg.par_str, this->LP.gg.par_dbl);
-	this->LP.gq.par_dbl = cmd.get_dbl(this->LP.gq.par_str, this->LP.gq.par_dbl);
-	this->LP.sqrtkap.par_dbl = cmd.get_dbl(this->LP.sqrtkap.par_str, this->LP.sqrtkap.par_dbl);
-	this->LP.dw.par_dbl = cmd.get_dbl(this->LP.dw.par_str, this->LP.dw.par_dbl);
-	this->LP.T.par_dbl = cmd.get_dbl(this->LP.T.par_str, this->LP.T.par_dbl);
+	this->OP.m.par_dbl = cmd.get_dbl(this->OP.m.par_str, this->OP.m.par_dbl);
+	this->OP.w.par_dbl = cmd.get_dbl(this->OP.w.par_str, this->OP.w.par_dbl);
+	this->OP.w2.par_dbl = this->OP.w.par_dbl * this->OP.w.par_dbl;
+	this->OP.sb.par_dbl = cmd.get_dbl(this->OP.sb.par_str, this->OP.sb.par_dbl);
+	this->OP.b0.par_dbl = cmd.get_dbl(this->OP.b0.par_str, this->OP.b0.par_dbl);
+	this->OP.sr.par_dbl = cmd.get_dbl(this->OP.sr.par_str, this->OP.sr.par_dbl);
 
-	this->FP.K.par_dbl = cmd.get_dbl(this->FP.K.par_str, this->FP.K.par_dbl);
-	this->FP.tau.par_dbl = cmd.get_dbl(this->FP.tau.par_str, this->FP.tau.par_dbl);
-	this->FP.wLP.par_dbl = cmd.get_dbl(this->FP.wLP.par_str, this->FP.wLP.par_dbl);
-	
-	this->IP.int_time.par_dbl = cmd.get_dbl(this->IP.int_time.par_str, this->IP.int_time.par_dbl);
-	this->IP.out_time.par_dbl = cmd.get_dbl(this->IP.out_time.par_str, this->IP.out_time.par_dbl);
-	this->IP.dt.par_dbl = cmd.get_dbl(this->IP.dt.par_str, this->IP.dt.par_dbl);
-	this->IP.sqrtdt.par_dbl = cmd.get_dbl(this->IP.dt.par_str, sqrt(this->IP.dt.par_dbl));
-	this->IP.D.par_dbl = cmd.get_dbl(this->IP.D.par_str, this->IP.D.par_dbl);
-	this->IP.rea.par_dbl = cmd.get_dbl(this->IP.rea.par_str, this->IP.rea.par_dbl);
+	this->IP.Tmin.par_dbl = cmd.get_dbl(this->IP.Tmin.par_str, this->IP.Tmin.par_dbl);
+	this->IP.Tmax.par_dbl = cmd.get_dbl(this->IP.Tmax.par_str, this->IP.Tmax.par_dbl);
+	this->IP.Tpts.par_int = cmd.get_dbl(this->IP.Tpts.par_str, this->IP.Tpts.par_int);
+	this->IP.dT.par_dbl = cmd.get_dbl(this->IP.dT.par_str, this->IP.dT.par_dbl);
+
+	this->IP.Xmin.par_dbl = cmd.get_dbl(this->IP.Xmin.par_str, this->IP.Xmin.par_dbl);
+	this->IP.Xmax.par_dbl = cmd.get_dbl(this->IP.Xmax.par_str, this->IP.Xmax.par_dbl);
+	this->IP.Xpts.par_int = cmd.get_dbl(this->IP.Xpts.par_str, this->IP.Xpts.par_int);
+	this->IP.dX.par_dbl = cmd.get_dbl(this->IP.dX.par_str, this->IP.dX.par_dbl);
+
+	this->IP.max_RAM = cmd.get_dbl("max_RAM", this->IP.max_RAM);
+
+
+	double CN_RAM = 8.0*this->IP.Xpts.par_int*this->IP.Xpts.par_int;
+	CN_RAM += 4.0*this->IP.Xpts.par_int;
+	CN_RAM *= 8e-6;
+
+	double IO_RAM = 2*this->IP.Xpts.par_int*this->IP.Tpts.par_int;
+	IO_RAM *= 8e-6;
+
+	this->IP.estimated_RAM = CN_RAM + IO_RAM;
+
+	if(this->IP.max_RAM < CN_RAM)
+	{
+		cout << "err003: too much estimated RAM for the CN matrix" << endl;
+	}
+	else
+	{
+		if(this->IP.max_RAM > this->IP.estimated_RAM)
+		{
+			this->IP.divide_in_batches = false;
+			this->IP.batches = 0;
+		}
+		else
+		{
+			this->IP.divide_in_batches = true;
+			this->IP.batches = ceil(IO_RAM/(this->IP.max_RAM - CN_RAM));
+
+			if(this->IP.batches > this->IP.Tpts.par_int)
+			{
+				cout << "err004: batch size smaller than time step" << endl;
+			}
+		}
+	}
 }
 
-par* allpar_set::get_par_ptr(std::string par_str)
+par* all_par_set::get_par_ptr(std::string par_str)
 {
 	vector<par*> collection = this->collect_ptr();
 
@@ -559,14 +588,14 @@ par* allpar_set::get_par_ptr(std::string par_str)
 	
 	if((*out_par_ptr).par_str == "err")
 	{
-		cout << "err008"<< endl;
+		cout << "err005"<< endl;
 	}
 	
 	
 	return out_par_ptr;
 }
 
-/*
+
 //###########################################
 
 icpar_set::icpar_set(string option)
