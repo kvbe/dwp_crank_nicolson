@@ -18,6 +18,7 @@
 
 #include "timer.hpp"
 #include "parameter.hpp"
+#include "initial_condition.hpp"
 
 
 
@@ -73,6 +74,12 @@ int main(int argc, char* argv[])
 	AP.check_cmd_line(argc,argv);
 
 	AP.cout_pars();
+
+
+	init_cond IC(AP,"her",3);
+
+	
+
 
 	double Tmin = 0.0;
 	double Tmax = 8.0;

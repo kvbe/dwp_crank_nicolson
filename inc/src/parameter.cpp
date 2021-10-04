@@ -596,6 +596,8 @@ par* all_par_set::get_par_ptr(std::string par_str)
 }
 
 
+/*
+
 //###########################################
 
 icpar_set::icpar_set(string option)
