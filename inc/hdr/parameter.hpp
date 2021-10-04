@@ -144,26 +144,15 @@ public:
 
 //###########################################
 
-
-/*
-
-
-//###########################################
-
 class osc_par_dbl_set
 {
 public:
-	double ag;
-	double aq;
-	double Jg;
-	double q0;
-	double rs;
-	double g;
-	double gg;
-	double gq;
-	double sqrtkap;
-	double dw;
-	double T;
+	double m;
+	double w;
+	double w2;
+	double sb;
+	double b0;
+	double sr;
 
 	osc_par_dbl_set(osc_par_set init_OP);
 	osc_par_dbl_set(all_par_set init_AP);
@@ -174,19 +163,18 @@ public:
 class int_par_dbl_set
 {
 public:
-	double int_time;
-	double out_time;
-	double dt;
-	double sqrtdt;
-	double D;
-	double rea;
+	double Tmin;
+	double Tmax;
+	double Tpts;
+	double dT;
 
+	double Xmin;
+	double Xmax;
+	double Xpts;
+	double dX;
   
-	ipar_dbl_set(ipar_set IP);
-	ipar_dbl_set(allpar_set AP);
+	int_par_dbl_set(int_par_set init_IP);
+	int_par_dbl_set(all_par_set init_AP);
 };
-
-
-*/
 
 #endif
