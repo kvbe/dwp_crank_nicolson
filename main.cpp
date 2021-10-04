@@ -19,6 +19,7 @@
 #include "timer.hpp"
 #include "parameter.hpp"
 #include "initial_condition.hpp"
+#include "cn_solver.hpp"
 
 
 
