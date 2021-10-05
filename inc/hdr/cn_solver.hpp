@@ -8,7 +8,12 @@
 class cn_solver
 {
 public:
+	all_par_set AP;
+
 	cn_solver();
+	cn_solver(all_par_set);
+
+	arma::vec get_step(arma::vec, double);
 };
 
 #endif

@@ -80,6 +80,13 @@ int main(int argc, char* argv[])
 	init_cond IC(AP,"her",3);
 
 	
+	cn_solver CN(AP);
+	vec test_vec(4, fill::zeros);
+	vec test_vec2(4, fill::zeros);	
+	
+	test_vec2 = CN.get_step(test_vec,2.6432345);
+
+
 
 
 	double Tmin = 0.0;
