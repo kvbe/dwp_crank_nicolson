@@ -1,13 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as pl
 import matplotlib.animation as an
+import scipy.special as sp
 
 def s(t,mode,p):
+	t0 = (p.Tmax-p.Tmin)/2+p.Tmin
+	t1 = p.sr*(t-t0)
 	if mode=="tanh":
-		t0 = (p.Tmax-p.Tmin)/2+p.Tmin
-
-		res = 0.5*np.tanh(p.sr*(t-t0))+0.5
-		return res 
+		res = 0.5*np.tanh(t1)+0.5
+		return res
+	elif mode=="erf":
+		res = 0.5*sp.erf(t1)+0.5
+		return res
+	elif mode=="arctan":
+		res = 0.5*np.arctan(t1)/(np.pi/2)+0.5
+		return res
 	else:
 		return 0
 
@@ -15,6 +22,9 @@ def b(x,mode,p):
 	if mode=="gauss":
 		res = p.b0/(p.sb*np.sqrt(2*np.pi))
 		res*= np.exp(-x**2/(2*p.sb**2))
+		return res
+	elif mode=="lorentz":
+		res = p.b0/np.pi*p.sb/(x**2+p.sb**2)
 		return res
 	else:
 		return 0
@@ -33,6 +43,9 @@ class par:
 		self.Tmin = Tmin
 		self.Tmax = Tmax
 
+
+step_mode = "arctan"
+barrier_mode = "lorentz"
 
 Tsec = 20
 Tfps = 24
@@ -62,8 +75,8 @@ p = par(1,1,0.5,20,1,Tmin,Tmax)
 for i1 in range(Tpts):
 	for i2 in range(Xpts):
 		P[i1,i2]=p.m*p.w2/2*X[i2]**2
-		P[i1,i2]+=b(X[i2],"gauss",p)*s(T[i1],"tanh",p)
-	S[i1]=s(T[i1],"tanh",p)
+		P[i1,i2]+=b(X[i2],barrier_mode,p)*s(T[i1],step_mode,p)
+	S[i1]=s(T[i1],step_mode,p)
 
 fig, axs = pl.subplots(1,2)
 
@@ -79,7 +92,7 @@ axs[0].set_xlabel(r'$t$')
 axs[0].set_ylabel(r'$s$')
 title0 = axs[0].text(
 	0.0,
-	1.04,
+	0.9,
 	r'$t=$'+str(np.around(T[0], decimals=2))
 )
 
