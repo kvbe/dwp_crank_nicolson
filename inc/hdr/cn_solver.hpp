@@ -8,7 +8,7 @@
 class cn_solver
 {
 public:
-	all_par_set AP;
+	all_par_set AP{"def","def"};
 
 	cn_solver();
 	cn_solver(all_par_set);

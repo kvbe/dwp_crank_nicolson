@@ -117,6 +117,8 @@ public:
 	std::vector<par> collect();
 	void cout_pars(std::vector<par> collection);
 	void cout_pars();
+
+	friend std::vector<double> estimate_batches(int, int, double);
 };
 
 //###########################################
@@ -136,10 +138,10 @@ public:
 	std::vector<par*> collect_ptr();
 	void cout_pars(std::vector<par> collection);
 	void cout_pars();
-
-
 	void check_cmd_line(int argc, char* argv[]);
 	par* get_par_ptr(std::string);
+
+	friend std::vector<double> estimate_batches(int, int, double);
 };
 
 //###########################################

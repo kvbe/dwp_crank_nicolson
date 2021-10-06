@@ -64,7 +64,9 @@ int main(int argc, char* argv[])
 {
 	timer time_total;
 
-	osc_par_set OP("1");
+	osc_par_set OP("gauss_std");
+
+
 //	OP.cout_pars();
 
 	int_par_set IP("quick");
@@ -72,21 +74,27 @@ int main(int argc, char* argv[])
 
 
 	all_par_set AP(OP,IP);
+
 	AP.check_cmd_line(argc,argv);
 
-	AP.cout_pars();
+//	AP.cout_pars();
 
 
 	init_cond IC(AP,"her",3);
 
-	
+//	IC.v.print();
+
+
 	cn_solver CN(AP);
+
 	vec test_vec(2*AP.IP.Xpts.par_int, fill::zeros);
 	vec test_vec2(2*AP.IP.Xpts.par_int, fill::zeros);	
 	
-	test_vec2 = CN.get_step(test_vec,2.6432345);
+	test_vec2 = CN.get_step(test_vec,0);
 
+	test_vec2.print();
 
+/*
 
 
 	double Tmin = 0.0;
@@ -178,10 +186,11 @@ int main(int argc, char* argv[])
 	mat mRR(RR);
 
 	mat RES = mLL.i()*mRR;
-
+	*/
 
 	time_total.stop();
 	time_total.print_elaps();
+
 	return 0;
 }
 

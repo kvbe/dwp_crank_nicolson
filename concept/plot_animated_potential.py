@@ -44,11 +44,11 @@ class par:
 		self.Tmax = Tmax
 
 
-step_mode = "arctan"
-barrier_mode = "lorentz"
+step_mode = "tanh"
+barrier_mode = "gauss"
 
-Tsec = 20
-Tfps = 24
+Tsec = 2
+Tfps = 10
 Tpts = Tsec*Tfps
 Tmin = 0
 Tmax = 8*np.pi
@@ -56,7 +56,7 @@ Tmax = 8*np.pi
 T = np.linspace(Tmin, Tmax, num=Tpts, endpoint=False)
 
 
-Xpts = 300
+Xpts = 10
 Xlen = 8
 Xmin = -Xlen
 Xmax = Xlen
@@ -69,7 +69,7 @@ P = np.zeros((Tpts,Xpts))
 S = np.zeros(Tpts)
 
 
-p = par(1,1,0.5,20,1,Tmin,Tmax)
+p = par(1,1,0.5,20,10,Tmin,Tmax)
 
 
 for i1 in range(Tpts):

@@ -23,30 +23,33 @@ par_i::par_i(int init_int,
 
 //###########################################
 
-par::par(double init_dbl, 
-		 string init_str,
-		 string init_tex
-		)
+par::par(
+	double init_dbl, 
+	string init_str,
+	string init_tex
+	)
 {
 	par_dbl = init_dbl;
 	par_str = init_str;
 	par_tex = init_tex;
 }
 
-par::par(int init_int, 
-		 string init_str,
-		 string init_tex
-		)
+par::par(
+	int init_int, 
+	string init_str,
+	string init_tex
+	)
 {
 	par_dbl = (double)init_int;
 	par_str = init_str;
 	par_tex = init_tex;
 }
 
-par::par(bool init_bool, 
-		 string init_str,
-		 string init_tex
-		)
+par::par(
+	bool init_bool, 
+	string init_str,
+	string init_tex
+	)
 {
 	par_dbl = 0.0;
 	if(init_bool)
@@ -241,7 +244,7 @@ mode_cmd::mode_cmd(int init_argc, char **init_argv)
 
 osc_par_set::osc_par_set(string option)
 {
-	if(option == "1")
+	if(option == "def")
 	{
 		this->m.par_dbl = 1.0;
 		this->w.par_dbl = 1.0;
@@ -250,13 +253,13 @@ osc_par_set::osc_par_set(string option)
 		this->b0.par_dbl = 1.0;
 		this->sr.par_dbl = 1.0;
 	}
-	else if(option == "also1")
+	else if(option == "gauss_std")
 	{
 		this->m.par_dbl = 1.0;
 		this->w.par_dbl = 1.0;
 		this->w2.par_dbl = this->w.par_dbl*this->w.par_dbl;
-		this->sb.par_dbl = 1.0;
-		this->b0.par_dbl = 1.0;
+		this->sb.par_dbl = 0.5;
+		this->b0.par_dbl = 20.0;
 		this->sr.par_dbl = 1.0;
 
 	}
@@ -306,6 +309,18 @@ void osc_par_set::cout_pars()
 
 //###########################################
 
+vector<double> estimate_batches(int Xpts, int Tpts, double max_RAM)
+{
+	vector<double> out(3);
+
+	return out;
+}
+
+
+		//friend function->estimate batches
+		//in: Xpts, Tpts, max_RAM
+		//out estimated ram, divide in batches, batches
+
 
 int_par_set::int_par_set(string option)
 {
@@ -330,16 +345,21 @@ int_par_set::int_par_set(string option)
 	else if(option == "quick")
 	{
 		this->Tmin.par_dbl = 0.0;
-		this->Tmax.par_dbl = 4.0;
-		this->Tpts.par_int = 50;
+		this->Tmax.par_dbl = 8.0*M_PI;
+		this->Tpts.par_int = 20.0*24.0;
 		this->dT.par_dbl = (this->Tmax.par_dbl-this->Tmin.par_dbl)/this->Tpts.par_int;
 
-		this->Xmin.par_dbl = -5.0;
-		this->Xmax.par_dbl = 5.0;
-		this->Xpts.par_int = 50;
+		this->Xmin.par_dbl = -8.0;
+		this->Xmax.par_dbl = 8.0;
+		this->Xpts.par_int = 300;
 		this->dX.par_dbl = (this->Xmax.par_dbl-this->Xmin.par_dbl)/this->Xpts.par_int;
 
 		this->max_RAM = 1e3;
+
+		//friend function->estimate batches
+		//in: Xpts, Tpts, max_RAM
+		//out estimated ram, divide in batches, batches
+
 
 
 		double CN_RAM = 8.0*this->Xpts.par_int*this->Xpts.par_int;
@@ -443,8 +463,8 @@ all_par_set::all_par_set()
 
 all_par_set::all_par_set(string optO, string optI)
 {
-	osc_par_set OP_init{optO};
-	int_par_set IP_init{optI};
+	osc_par_set OP_init(optO);
+	int_par_set IP_init(optI);
 
 	this->OP = OP_init;
 	this->IP = IP_init;
