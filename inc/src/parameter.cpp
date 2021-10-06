@@ -311,8 +311,48 @@ void osc_par_set::cout_pars()
 
 vector<double> estimate_batches(int Xpts, int Tpts, double max_RAM)
 {
-	vector<double> out(3);
+	vector<double> out(3,0);
 
+
+	double CN_RAM = 8.0*Xpts*Xpts;
+	CN_RAM += 4.0*Xpts;
+	CN_RAM *= 8e-6;
+
+	double IO_RAM = 2*Xpts*Tpts;
+	IO_RAM *= 8e-6;
+
+	double estimated_RAM = CN_RAM + IO_RAM;
+	double divide_in_batches = 0;
+	double batches = 0;
+
+
+	if(max_RAM < CN_RAM)
+	{
+		cout << "err003: too much estimated RAM for the CN matrix" << endl;
+	}
+	else
+	{
+		if(max_RAM > estimated_RAM)
+		{
+			divide_in_batches = 0;
+			batches = 0;
+		}
+		else
+		{
+			divide_in_batches = 1;
+			batches = ceil(IO_RAM/(max_RAM - CN_RAM));
+
+			if(batches > Tpts)
+			{
+				cout << "err004: batch size smaller than time step" << endl;
+			}
+		}
+	}
+
+	out[0] = estimated_RAM;
+	out[1] = divide_in_batches;
+	out[2] = batches;
+	
 	return out;
 }
 
@@ -342,6 +382,25 @@ int_par_set::int_par_set(string option)
 		this->batches = 0;
 		this->divide_in_batches = false;
 	}
+	else if(option == "Xtest")
+	{
+		this->Tmin.par_dbl = 0.0;
+		this->Tmax.par_dbl = 2.0*M_PI;
+		this->Tpts.par_int = 10.0*5.0;
+		this->dT.par_dbl = (this->Tmax.par_dbl-this->Tmin.par_dbl)/this->Tpts.par_int;
+
+		this->Xmin.par_dbl = -2.0;
+		this->Xmax.par_dbl = 2.0;
+		this->Xpts.par_int = 10;
+		this->dX.par_dbl = (this->Xmax.par_dbl-this->Xmin.par_dbl)/this->Xpts.par_int;
+
+		this->max_RAM = 1e3;
+
+		vector<double> bat = estimate_batches(this->Xpts.par_int,this->Tpts.par_int,this->max_RAM);
+		this->estimated_RAM = bat[0];
+		this->divide_in_batches = bat[1];
+		this->batches = bat[2];
+	}
 	else if(option == "quick")
 	{
 		this->Tmin.par_dbl = 0.0;
@@ -356,43 +415,10 @@ int_par_set::int_par_set(string option)
 
 		this->max_RAM = 1e3;
 
-		//friend function->estimate batches
-		//in: Xpts, Tpts, max_RAM
-		//out estimated ram, divide in batches, batches
-
-
-
-		double CN_RAM = 8.0*this->Xpts.par_int*this->Xpts.par_int;
-		CN_RAM += 4.0*this->Xpts.par_int;
-		CN_RAM *= 8e-6;
-
-		double IO_RAM = 2*this->Xpts.par_int*this->Tpts.par_int;
-		IO_RAM *= 8e-6;
-
-		this->estimated_RAM = CN_RAM + IO_RAM;
-
-		if(this->max_RAM < CN_RAM)
-		{
-			cout << "err003: too much estimated RAM for the CN matrix" << endl;
-		}
-		else
-		{
-			if(this->max_RAM > this->estimated_RAM)
-			{
-				this->divide_in_batches = false;
-				this->batches = 0;
-			}
-			else
-			{
-				this->divide_in_batches = true;
-				this->batches = ceil(IO_RAM/(this->max_RAM - CN_RAM));
-
-				if(this->batches > this->Tpts.par_int)
-				{
-					cout << "err004: batch size smaller than time step" << endl;
-				}
-			}
-		}
+		vector<double> bat = estimate_batches(this->Xpts.par_int,this->Tpts.par_int,this->max_RAM);
+		this->estimated_RAM = bat[0];
+		this->divide_in_batches = bat[1];
+		this->batches = bat[2];
 	}
 	else
 	{

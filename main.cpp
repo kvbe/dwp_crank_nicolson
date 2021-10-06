@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 
 //	OP.cout_pars();
 
-	int_par_set IP("quick");
+	int_par_set IP("Xtest");
 //	IP.cout_pars();
 
 
@@ -87,10 +87,9 @@ int main(int argc, char* argv[])
 
 	cn_solver CN(AP);
 
-	vec test_vec(2*AP.IP.Xpts.par_int, fill::zeros);
 	vec test_vec2(2*AP.IP.Xpts.par_int, fill::zeros);	
 	
-	test_vec2 = CN.get_step(test_vec,0);
+	test_vec2 = CN.get_step(IC.v,0);
 
 	test_vec2.print();
 

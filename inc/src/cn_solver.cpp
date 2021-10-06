@@ -91,8 +91,9 @@ vec cn_solver::get_step(arma::vec vec_in, double t)
 	Rspmat2 += I;
 	mat Rmat2(Rspmat2);
 
-    vec vec_out(2*ip.Xpts,fill::ones);
-//	vec_out = Lmat2.i()*Rmat2*vec_in;
+ //   vec vec_out(2*ip.Xpts,fill::ones);
 
-    return vec_out;
+//	vec vec_out = ;
+
+    return Lmat2.i()*Rmat2*vec_in;
 }
