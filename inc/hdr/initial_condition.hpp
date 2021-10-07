@@ -14,6 +14,8 @@ public:
 
 	init_cond();
 	init_cond(all_par_set, std::string, int);
+
+	friend int factorial(int);
 };
 
 #endif
