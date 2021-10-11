@@ -91,7 +91,11 @@ int main(int argc, char* argv[])
 	
 	test_vec2 = CN.get_step(IC.v,0);
 
-	test_vec2.print();
+	mode_cmd mode(argc, argv);
+
+
+
+//	test_vec2.print();
 
 /*
 

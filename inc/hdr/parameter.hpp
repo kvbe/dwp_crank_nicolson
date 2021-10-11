@@ -59,7 +59,12 @@ class mode_cmd
 	
 public:
 	std::string cmd_line;
-	std::string mode_str;
+
+	std::string p_mode_str1;
+	std::string p_mode_str2;
+
+	std::string m_mode_str1;
+	std::string m_mode_str2;
 
 	std::string par1_str;
 	std::string par2_str;

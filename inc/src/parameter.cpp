@@ -100,141 +100,41 @@ mode_cmd::mode_cmd(int init_argc, char **init_argv)
 {
 	argc = init_argc;
 	argv = init_argv;
-	
-	
+
 	for(int i = 1; i < argc; i++)
 	{
 		cmd_line += argv[i];
 	}
-	
-	regex mode_rgx(R"(-m:(\w*))");
-	smatch mode_match;
-	
-	if(regex_search(cmd_line, mode_match, mode_rgx))
-	{
-		mode_str = mode_match[1];
-	}
-	
 
-	if(mode_str == "ts")
-	{
-		regex ts_rgx(R"(ts\[(.*?)\])");
-		smatch ts_match;
-		
-		if(regex_search(cmd_line, ts_match, ts_rgx))
-		{
-			par1_str = ts_match[1];
-		}
-		
-	}
-	
-	
-	if(mode_str == "lscan")
-	{
-		regex lscan_rgx(R"(lscan\[(.*?),(.*?),(.*?),(.*?),(.*?)\])");
-		smatch lscan_match;
-		
-		if(regex_search(cmd_line, lscan_match, lscan_rgx))
-		{
-		
-			par1_str = lscan_match[1];
+	regex option_rgx(R"(\-[a-z]:)");
+	smatch option_match;
 
-			par1_start = stod(lscan_match[2]);
-			par1_stop  = stod(lscan_match[3]);
-			par1_steps = stoi(lscan_match[4]);
-			
-			par2_str = lscan_match[5];
-		}
-		
-	}
-	
-	if(mode_str == "maxscan")
+	while(regex_search(cmd_line, option_match, option_rgx))
 	{
-		regex maxscan_rgx(R"(maxscan\[(.*?),(.*?),(.*?),(.*?),(.*?)\])");
-		smatch maxscan_match;
-		
-		if(regex_search(cmd_line, maxscan_match, maxscan_rgx))
+		if(option_match[0]=="-p:")
 		{
-		
-			par1_str = maxscan_match[1];
-
-			par1_start = stod(maxscan_match[2]);
-			par1_stop  = stod(maxscan_match[3]);
-			par1_steps = stoi(maxscan_match[4]);
-			up_down = maxscan_match[5];
+			regex p_mode_rgx(R"(-p:\[(.*?),(.*?)\])");
+			smatch p_mode_match;
 			
+			if(regex_search(cmd_line, p_mode_match, p_mode_rgx))
+			{
+				p_mode_str1 = p_mode_match[1];
+				p_mode_str2 = p_mode_match[2];
+			}
 		}
-		
-	}
-	
-	
-	
-	if(mode_str == "maxsweep")
-	{
-		regex maxsweep_rgx(R"(maxsweep\[(.*?),(.*?),(.*?),(.*?),(.*?)\])");
-		smatch maxsweep_match;
-		
-		if(regex_search(cmd_line, maxsweep_match, maxsweep_rgx))
+		else if(option_match[0]=="-m:")
 		{
-		
-			par1_str = maxsweep_match[1];
-
-			par1_start = stod(maxsweep_match[2]);
-			par1_stop  = stod(maxsweep_match[3]);
-			par1_steps = stoi(maxsweep_match[4]);
-			up_down = maxsweep_match[5];
+			regex m_mode_rgx(R"(-m:\[(.*?),(.*?)\])");
+			smatch m_mode_match;
 			
+			if(regex_search(cmd_line, m_mode_match, m_mode_rgx))
+			{
+				m_mode_str1 = m_mode_match[1];
+				m_mode_str2 = m_mode_match[2];
+			}
 		}
-		
+		cmd_line = option_match.suffix();
 	}
-	
-	
-	if(mode_str == "maxsweep_twopar")
-	{
-		regex maxsweep_twopar_rgx(R"(maxsweep_twopar\[\[(.*?),(.*?)\],(.*?),(.*?),(.*?),(.*?)\])");
-		smatch maxsweep_twopar_match;
-		
-		if(regex_search(cmd_line, maxsweep_twopar_match, maxsweep_twopar_rgx))
-		{
-		
-			par1_str = maxsweep_twopar_match[1];
-			par2_str = maxsweep_twopar_match[2];
-
-			par1_start = stod(maxsweep_twopar_match[3]);
-			par1_stop  = stod(maxsweep_twopar_match[4]);
-			par1_steps = stoi(maxsweep_twopar_match[5]);
-			up_down = maxsweep_twopar_match[6];
-			
-			
-			
-		}
-		
-	}
-	
-	
-	
-	if(mode_str == "statesweep")
-	{
-		regex statesweep_rgx(R"(statesweep\[(.*?),(.*?),(.*?),(.*?),(.*?),(.*?)\])");
-		smatch statesweep_match;
-		
-		if(regex_search(cmd_line, statesweep_match, statesweep_rgx))
-		{
-		
-			par1_str = statesweep_match[1];
-
-			par1_start = stod(statesweep_match[2]);
-			par1_stop  = stod(statesweep_match[3]);
-			par1_steps = stoi(statesweep_match[4]);
-			
-			par2_str = statesweep_match[5];
-			up_down = statesweep_match[6];
-			
-			
-		}
-		
-	}
-	
 }
 
 
@@ -613,6 +513,9 @@ void all_par_set::check_cmd_line(int argc, char* argv[])
 			}
 		}
 	}
+
+
+
 }
 
 par* all_par_set::get_par_ptr(std::string par_str)
