@@ -135,6 +135,7 @@ public:
 	int_par_set IP{"def"};
 	
 	all_par_set();
+	all_par_set(int argc, char* argv[]);
 	all_par_set(std::string optO, std::string optI);
 	all_par_set(osc_par_set OP_init, int_par_set IP_init);
 

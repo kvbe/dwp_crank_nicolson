@@ -14,6 +14,33 @@ cn_solver::cn_solver(all_par_set init_AP)
     this->AP = init_AP;
 }
 
+cn_solver::cn_solver(int argc, char* argv[])
+{
+	mode_cmd mode(argc, argv);
+
+	all_par_set init_AP(mode.p_mode_str1, mode.p_mode_str2);
+	this->AP = init_AP;
+
+	this->barrier_mode = mode.m_mode_str1;
+	this->step_mode = mode.m_mode_str2;
+}
+
+cn_solver::cn_solver(all_par_set init_AP, string init_barrier_mode, string init_step_mode)
+{
+	this->AP = init_AP;
+	this->barrier_mode = init_barrier_mode;
+	this->step_mode = init_step_mode;
+}
+
+cn_solver::cn_solver(string init_osc_mode, string init_int_mode, string init_barrier_mode, string init_step_mode)
+{
+	all_par_set init_AP(init_osc_mode, init_int_mode);
+	this->AP = init_AP;
+	
+	this->barrier_mode = init_barrier_mode;
+	this->step_mode = init_step_mode;
+}
+
 double barrier_gauss(double x, osc_par_dbl_set op)
 {
     double res = op.b0*exp(-0.5*x*x/(op.sb*op.sb))/(op.sb*sqrt(2*M_PI));

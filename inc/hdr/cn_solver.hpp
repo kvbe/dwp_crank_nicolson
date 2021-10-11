@@ -10,8 +10,15 @@ class cn_solver
 public:
 	all_par_set AP{"def","def"};
 
+	std::string barrier_mode;
+	std::string step_mode;
+
 	cn_solver();
+	cn_solver(int argc, char* argv[]);
 	cn_solver(all_par_set);
+	cn_solver(all_par_set, std::string, std::string);
+	cn_solver(std::string, std::string, std::string, std::string);
+
 
 	arma::vec get_step(arma::vec, double);
 

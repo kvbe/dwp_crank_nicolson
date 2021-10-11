@@ -387,6 +387,17 @@ void int_par_set::cout_pars()
 all_par_set::all_par_set()
 {}
 
+all_par_set::all_par_set(int argc, char* argv[])
+{
+	mode_cmd mode(argc, argv);
+	osc_par_set OP_init(mode.p_mode_str1);
+	int_par_set IP_init(mode.p_mode_str2);
+
+	this->OP = OP_init;
+	this->IP = IP_init;
+
+}
+
 all_par_set::all_par_set(string optO, string optI)
 {
 	osc_par_set OP_init(optO);
