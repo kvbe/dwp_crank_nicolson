@@ -6,6 +6,52 @@
 using namespace std;
 using namespace arma;
 
+array<sp_mat,2> build_mat(
+	double Xpts,
+	double Xmin,
+	double dX,
+	double r1,
+	double r2,
+	double r3,
+	osc_par_dbl_set op,
+	string barrier_mode,
+	string step_mode
+)
+{
+	sp_mat Lmat(Xpts,Xpts);
+	sp_mat Rmat(Xpts,Xpts);
+
+	for(unsigned long i=0; i<Xpts; i++)
+	{ 
+		double x = Xmin + i*dX + dX/2;;
+		
+		if(i<Xpts-1)
+		{
+			Lmat(i,i+1) = r1;
+			Lmat(i+1,i) = r1;
+
+			Rmat(i,i+1) = -r1;
+			Rmat(i+1,i) = -r1;
+		}
+
+		Lmat(i,i) = -2*r1;
+		Lmat(i,i) += r2*x*x;
+
+		Rmat(i,i) = 2*r1;
+		Rmat(i,i) += -r2*x*x;
+
+        
+
+		Lmat(i,i) += -r3*barrier_gauss(x,op)*step_tanh(t,op);//sure? not t+dt?
+
+		Rmat(i,i) += r3*barrier_gauss(x,op)*step_tanh(t,op);
+	}
+
+	array<sp_mat,2> RET = {Lmat,Rmat};
+
+	return RET;
+}
+
 cn_solver::cn_solver()
 {}
 
@@ -74,14 +120,26 @@ vec cn_solver::get_step(arma::vec vec_in, double t)
 	double r2 = op.m*op.w2*ip.dT/4;
 	double r3 = ip.dT/2;
 
-	sp_mat Lmat(ip.Xpts,ip.Xpts);
-	sp_mat Rmat(ip.Xpts,ip.Xpts);
-	
 	sp_mat complex_map(2,2);
 	complex_map(0,1) = 1;
 	complex_map(1,0) = -1;
 
-    for(unsigned long i=0; i<ip.Xpts; i++)
+	array<sp_mat,2> test = build_mat(
+		ip.Xpts,
+		ip.Xmin,
+		ip.dX,
+		r1,
+		r2,
+		r3,
+		op,
+		this->barrier_mode,
+		this->step_mode
+	);
+
+	sp_mat Lmat(ip.Xpts,ip.Xpts);
+	sp_mat Rmat(ip.Xpts,ip.Xpts);
+
+	for(unsigned long i=0; i<ip.Xpts; i++)
 	{ 
 		double x = ip.Xmin + i*ip.dX + ip.dX/2;;
 		

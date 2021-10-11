@@ -22,6 +22,18 @@ public:
 
 	arma::vec get_step(arma::vec, double);
 
+	friend std::array<arma::sp_mat,2> build_mat(
+		double,
+		double,
+		double,
+		double,
+		double,
+		double,
+		osc_par_dbl_set,
+		std::string,
+		std::string
+	);
+
 	friend double barrier_gauss(double, osc_par_dbl_set);
 	friend double step_tanh(double, osc_par_dbl_set);
 	friend double step_erf(double, osc_par_dbl_set);
