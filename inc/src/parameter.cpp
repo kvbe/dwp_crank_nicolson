@@ -107,14 +107,21 @@ mode_cmd::mode_cmd(int init_argc, char **init_argv)
 		cmd_line += argv[i];
 	}
 	
-	regex mode_rgx(R"(-m:(\w*))");
+	regex mode_rgx(R"-m\[(.[^,]*?),(.[^,]*?)\]|-m\[(.[^,]*?),(.*[^,]?),(.*[^,]?)\]");
 	smatch mode_match;
 	
 	if(regex_search(cmd_line, mode_match, mode_rgx))
 	{
-		mode_str = mode_match[1];
+		cout << mode_match[0] << endl;
+		cout << mode_match[1] << endl;
+		cout << mode_match[2] << endl;
+		cout << mode_match[3] << endl;
+		cout << mode_match[4] << endl;
+		cout << mode_match[5] << endl;
+//		mode_str = mode_match[1];
 	}
 	
+	/*
 
 	if(mode_str == "ts")
 	{
@@ -234,6 +241,7 @@ mode_cmd::mode_cmd(int init_argc, char **init_argv)
 		}
 		
 	}
+	*/
 	
 }
 

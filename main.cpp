@@ -93,7 +93,6 @@ int main(int argc, char* argv[])
 
 	test_vec2.print();
 
-	test();
 
 /*
 
