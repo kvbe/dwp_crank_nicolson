@@ -17,6 +17,15 @@ using namespace arma;
 init_cond::init_cond()
 {}
 
+init_cond::init_cond(int argc, char* argv[])
+{
+	all_par_set init_AP(argc, argv);
+	this->AP = init_AP;
+
+	
+
+}
+
 init_cond::init_cond(all_par_set init_AP, std::string init_opt, int init_ord)
 {
 	this->AP = init_AP;
@@ -52,5 +61,30 @@ init_cond::init_cond(all_par_set init_AP, std::string init_opt, int init_ord)
 	else
 	{
 		cout << "err006: option for inital condition not available";
+	}
+}
+
+ic_cmd::ic_cmd(int init_argc, char **init_argv)
+{
+	argc = init_argc;
+	argv = init_argv;
+
+	for(int i = 1; i < argc; i++)
+	{
+		cmd_line += argv[i];
+	}
+
+	regex option_rgx(R"(\-ic:\[(.*?),(.*?)\])");
+	smatch option_match;
+
+	if(regex_search(cmd_line, option_match, option_rgx))
+	{
+		this->ic_mode = option_match[1];
+		this->ord = (int) (option_match[2]);
+	}
+	else
+	{
+		this->ic_mode = "her";
+		this->ord = 1;
 	}
 }

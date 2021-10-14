@@ -12,4 +12,5 @@ using namespace arma;
 
 time_stepper::time_stepper(int argc, char* argv[])
 {
+	init_cond IC;
 }

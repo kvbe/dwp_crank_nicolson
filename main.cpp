@@ -64,6 +64,8 @@ int main(int argc, char* argv[])
 {
 	timer time_total;
 
+	ic_cmd testie(argc,argv);
+
 	osc_par_set OP("gauss_std");
 
 
