@@ -123,7 +123,7 @@ public:
 	void cout_pars(std::vector<par> collection);
 	void cout_pars();
 
-	friend std::vector<double> estimate_batches(int, int, double);
+	friend std::array<double,3> estimate_batches(int, int, double);
 };
 
 //###########################################
@@ -147,7 +147,7 @@ public:
 	void check_cmd_line(int argc, char* argv[]);
 	par* get_par_ptr(std::string);
 
-	friend std::vector<double> estimate_batches(int, int, double);
+	friend std::array<double,3> estimate_batches(int, int, double);
 };
 
 //###########################################

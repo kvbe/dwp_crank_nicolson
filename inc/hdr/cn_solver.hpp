@@ -29,10 +29,15 @@ public:
 		double,
 		double,
 		double,
+		double,
 		osc_par_dbl_set,
 		std::string,
 		std::string
 	);
+
+	friend double barrier(double, osc_par_dbl_set, std::string);
+	friend double step(double, osc_par_dbl_set, std::string);
+
 
 	friend double barrier_gauss(double, osc_par_dbl_set);
 	friend double step_tanh(double, osc_par_dbl_set);

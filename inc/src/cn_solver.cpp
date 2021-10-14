@@ -6,10 +6,48 @@
 using namespace std;
 using namespace arma;
 
+
+double barrier(double x, osc_par_dbl_set op, string barrier_mode)
+{
+	if(barrier_mode=="gauss")
+	{
+	    double res = op.b0*exp(-0.5*x*x/(op.sb*op.sb))/(op.sb*sqrt(2*M_PI));
+    	return res;
+	}
+	else if(barrier_mode=="lorentz")
+	{
+		double res = (op.b0/M_PI)*op.sb/(x*x+op.sb*op.sb);
+		return res;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+double step(double t, osc_par_dbl_set op, string step_mode)
+{
+	if(step_mode=="tanh")
+	{
+		double res = (1.0+tanh(op.sr*t))*0.5;
+    	return res;
+	}
+	else if(step_mode=="erf")
+	{
+	    double res = (1.0+erf(op.sr*t))*0.5;
+    	return res;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 array<sp_mat,2> build_mat(
 	double Xpts,
 	double Xmin,
 	double dX,
+	double t,
 	double r1,
 	double r2,
 	double r3,
@@ -42,9 +80,9 @@ array<sp_mat,2> build_mat(
 
         
 
-		Lmat(i,i) += -r3*barrier_gauss(x,op)*step_tanh(t,op);//sure? not t+dt?
+		Lmat(i,i) += -r3*barrier(x,op,barrier_mode)*step(t,op,step_mode);//sure? not t+dt?
 
-		Rmat(i,i) += r3*barrier_gauss(x,op)*step_tanh(t,op);
+		Rmat(i,i) += r3*barrier(x,op,barrier_mode)*step(t,op,step_mode);
 	}
 
 	array<sp_mat,2> RET = {Lmat,Rmat};
@@ -87,30 +125,6 @@ cn_solver::cn_solver(string init_osc_mode, string init_int_mode, string init_bar
 	this->step_mode = init_step_mode;
 }
 
-double barrier_gauss(double x, osc_par_dbl_set op)
-{
-    double res = op.b0*exp(-0.5*x*x/(op.sb*op.sb))/(op.sb*sqrt(2*M_PI));
-    return res;
-}
-
-double barrier_lorentz(double x, osc_par_dbl_set op)
-{
-    double res = (op.b0/M_PI)*op.sb/(x*x+op.sb*op.sb);
-    return res;
-}
-
-double step_tanh(double t, osc_par_dbl_set op)
-{
-    double res = (1.0+tanh(op.sr*t))*0.5;
-    return res;
-}
-
-double step_erf(double t, osc_par_dbl_set op)
-{
-    double res = (1.0+erf(op.sr*t))*0.5;
-    return res;
-}
-
 vec cn_solver::get_step(arma::vec vec_in, double t)
 {
     osc_par_dbl_set op(AP);
@@ -128,6 +142,7 @@ vec cn_solver::get_step(arma::vec vec_in, double t)
 		ip.Xpts,
 		ip.Xmin,
 		ip.dX,
+		t,
 		r1,
 		r2,
 		r3,
@@ -159,10 +174,9 @@ vec cn_solver::get_step(arma::vec vec_in, double t)
 		Rmat(i,i) += -r2*x*x;
 
         
-		Lmat(i,i) += -r3*barrier_gauss(x,op)*step_tanh(t,op);//sure? not t+dt?
-		Rmat(i,i) += r3*barrier_gauss(x,op)*step_tanh(t,op);
+		Lmat(i,i) += -r3*barrier(x,op,this->barrier_mode)*step(t,op,this->step_mode);//sure? not t+dt?
+		Rmat(i,i) += r3*barrier(x,op,this->barrier_mode)*step(t,op,this->step_mode);
 	}
-
 
 	sp_mat Lspmat2 = kron(complex_map,Lmat);
 	sp_mat Rspmat2 = kron(complex_map,Rmat);

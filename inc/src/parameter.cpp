@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 #include <regex>
 
 
@@ -209,9 +210,9 @@ void osc_par_set::cout_pars()
 
 //###########################################
 
-vector<double> estimate_batches(int Xpts, int Tpts, double max_RAM)
+array<double,3> estimate_batches(int Xpts, int Tpts, double max_RAM)
 {
-	vector<double> out(3,0);
+	array<double,3> out;
 
 
 	double CN_RAM = 8.0*Xpts*Xpts;
@@ -257,11 +258,6 @@ vector<double> estimate_batches(int Xpts, int Tpts, double max_RAM)
 }
 
 
-		//friend function->estimate batches
-		//in: Xpts, Tpts, max_RAM
-		//out estimated ram, divide in batches, batches
-
-
 int_par_set::int_par_set(string option)
 {
 	if(option == "def")
@@ -296,7 +292,8 @@ int_par_set::int_par_set(string option)
 
 		this->max_RAM = 1e3;
 
-		vector<double> bat = estimate_batches(this->Xpts.par_int,this->Tpts.par_int,this->max_RAM);
+		array<double,3> bat = estimate_batches(this->Xpts.par_int, this->Xpts.par_int, this->max_RAM);
+
 		this->estimated_RAM = bat[0];
 		this->divide_in_batches = bat[1];
 		this->batches = bat[2];
@@ -315,7 +312,8 @@ int_par_set::int_par_set(string option)
 
 		this->max_RAM = 1e3;
 
-		vector<double> bat = estimate_batches(this->Xpts.par_int,this->Tpts.par_int,this->max_RAM);
+		array<double,3> bat = estimate_batches(this->Xpts.par_int, this->Xpts.par_int, this->max_RAM);
+
 		this->estimated_RAM = bat[0];
 		this->divide_in_batches = bat[1];
 		this->batches = bat[2];
@@ -492,6 +490,8 @@ void all_par_set::check_cmd_line(int argc, char* argv[])
 
 	this->IP.max_RAM = cmd.get_dbl("max_RAM", this->IP.max_RAM);
 
+
+	//estimate_RAM();
 
 	double CN_RAM = 8.0*this->IP.Xpts.par_int*this->IP.Xpts.par_int;
 	CN_RAM += 4.0*this->IP.Xpts.par_int;

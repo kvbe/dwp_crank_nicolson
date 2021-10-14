@@ -87,6 +87,7 @@ int main(int argc, char* argv[])
 
 	cn_solver CN(AP);
 
+
 	vec test_vec2(2*AP.IP.Xpts.par_int, fill::zeros);	
 	
 	test_vec2 = CN.get_step(IC.v,0);
