@@ -1,4 +1,5 @@
 #include <armadillo>
+#include <string>
 
 #include "../hdr/cn_solver.hpp"
 
