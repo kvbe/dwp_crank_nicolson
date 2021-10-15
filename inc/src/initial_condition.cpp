@@ -80,7 +80,7 @@ ic_cmd::ic_cmd(int init_argc, char **init_argv)
 	if(regex_search(cmd_line, option_match, option_rgx))
 	{
 		this->ic_mode = option_match[1];
-		this->ord = (int) (option_match[2]);
+		this->ord = stoi((string) (option_match[2]));
 	}
 	else
 	{

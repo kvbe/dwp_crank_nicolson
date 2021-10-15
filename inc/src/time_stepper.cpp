@@ -12,5 +12,7 @@ using namespace arma;
 
 time_stepper::time_stepper(int argc, char* argv[])
 {
-	init_cond IC;
+	all_par_set AP(argc, argv);
+	cn_solver CN(AP);
+	init_cond IC(argc, argv);
 }
