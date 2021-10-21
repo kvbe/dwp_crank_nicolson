@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as pl
 import matplotlib.animation as an
 import scipy.special as sp
+import random as rn
 
 def s(t,mode,p):
 	t0 = (p.Tmax-p.Tmin)/2+p.Tmin
@@ -33,13 +34,14 @@ def b(x,mode,p):
 
 
 class par:
-	def __init__(self, m, w, sb, b0, sr, Tmin, Tmax):
+	def __init__(self, m, w, sb, b0, sr, D, Tmin, Tmax):
 		self.m = m
 		self.w = w
 		self.w2 = w*w
 		self.sb = sb
 		self.b0 = b0
 		self.sr = sr
+		self.D = D
 		self.Tmin = Tmin
 		self.Tmax = Tmax
 
@@ -47,8 +49,8 @@ class par:
 step_mode = "tanh"
 barrier_mode = "gauss"
 
-Tsec = 2
-Tfps = 10
+Tsec = 10
+Tfps = 40
 Tpts = Tsec*Tfps
 Tmin = 0
 Tmax = 8*np.pi
@@ -56,7 +58,7 @@ Tmax = 8*np.pi
 T = np.linspace(Tmin, Tmax, num=Tpts, endpoint=False)
 
 
-Xpts = 10
+Xpts = 300
 Xlen = 8
 Xmin = -Xlen
 Xmax = Xlen
@@ -69,14 +71,14 @@ P = np.zeros((Tpts,Xpts))
 S = np.zeros(Tpts)
 
 
-p = par(1,1,0.5,20,10,Tmin,Tmax)
+p = par(1,1,0.5,20,1,0.0,Tmin,Tmax)
 
 
 for i1 in range(Tpts):
 	for i2 in range(Xpts):
 		P[i1,i2]=p.m*p.w2/2*X[i2]**2
 		P[i1,i2]+=b(X[i2],barrier_mode,p)*s(T[i1],step_mode,p)
-	S[i1]=s(T[i1],step_mode,p)
+	S[i1]=s(T[i1],step_mode,p)+p.D*rn.gauss(0,1)
 
 fig, axs = pl.subplots(1,2)
 

@@ -10,8 +10,13 @@
 class time_stepper
 {
 public:
+	all_par_set AP();
+	cn_solver CN();
+	init_cond IC();
 
 	time_stepper(int argc, char* argv[]);
+
+	std::vector<std::vector<double> > get_batch();
 };
 
 #endif
